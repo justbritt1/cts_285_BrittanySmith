@@ -5,6 +5,8 @@ Created on Mon Oct  2 17:45:00 2023
 @author: Brittany
 """
 
+from flask import Flask, render_template, request, redirect, url_for, session
+
 # Initialize memory bank
 memory = 0
 
@@ -32,18 +34,30 @@ while True:
     print("4. Divide")
     print("5. Memory Recall")
     print("6. Clear Memory")
-    print("7. Exit")
+    print("7. Enter Problem for Student")
+    print("8. Exit")
 
-    choice = input("Enter choice (1/2/3/4/5/6/7): ")
+    choice = input("Enter choice (1/2/3/4/5/6/7/8): ")
 
-    if choice == '7':
+    if choice == '8':
         print("Calculator exiting...")
         break
 
     try:
-        # Non-numeric inputs
-        num1 = float(input("Enter first number: "))
-        num2 = float(input("Enter second number: "))
+        if choice == '7':
+            problem = input("Enter a math problem for the student: ")
+            try:
+                # Evaluate the entered expression
+                result = eval(problem)
+                print("Result:", result)
+                memory = result
+            except:
+                print("Invalid math problem. Please enter a valid expression.")
+            continue
+        elif choice != '5':
+            # inputs for basic operations
+            num1 = float(input("Enter first number: "))
+            num2 = float(input("Enter second number: "))
     except ValueError:
         print("Invalid input. Please enter valid numerical value.")
         continue
