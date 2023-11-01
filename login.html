@@ -1,0 +1,12 @@
+<!-- login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login - My Calculator{% endblock %}
+
+{% block content %}
+    <h2>Login</h2>
+    <form method="post" action="{{ url_for('login') }}">
+        <!-- Login form fields go here -->
+    </form>
+    <p>{{ message }}</p>
+{% endblock %}

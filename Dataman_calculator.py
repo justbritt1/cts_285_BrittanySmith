@@ -5,7 +5,8 @@ Created on Mon Oct  2 17:45:00 2023
 @author: Brittany
 """
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
+
 
 # Initialize memory bank
 memory = 0
