@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Oct  2 17:45:00 2023
-
-@author: Brittany
+Justin Graves and Brittany Smith
+11/6/2023
+CTS-285 M3HW2
+dataman calculator project
 """
 
 from flask_sqlalchemy import SQLAlchemy
