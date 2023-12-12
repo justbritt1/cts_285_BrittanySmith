@@ -4,60 +4,100 @@ Justin Graves and Brittany Smith
 '''
 
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask_sqlalchemy import SQLAlchemy
-from dataman_calculator import add, subtract, multiply, divide
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Use SQLite as the database
 app.secret_key = 'your_secret_key'
-db = SQLAlchemy()
-db.init_app(app)
 
-class User(db.Model):
-    """Model representing a user in the database."""
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-
-def init_db():
-    """Initialize the database."""
-    with app.app_context():
-        db.create_all()
-
-# Initialize memory bank
 memory = 0
 
-# ... (other calculator functions)
+# Calculator functions
+def add(x, y):
+    return x + y
+
+def subtract(x, y):
+    return x - y
+
+def multiply(x, y):
+    return x * y
+
+def divide(x, y):
+    if y != 0:
+        return x / y
+    else:
+        return "Cannot divide by zero."
+
+@app.route('/calculator', methods=['GET', 'POST'])
+def calculator():
+    # Check if the user is not logged in
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    result = None
+
+    if request.method == 'POST':
+        num1 = float(request.form['num1'])
+        operation = request.form['operation']
+        num2 = float(request.form['num2'])
+
+        # Perform calculation based on the selected operation
+        if operation == '1':
+            result = add(num1, num2)
+        elif operation == '2':
+            result = subtract(num1, num2)
+        elif operation == '3':
+            result = multiply(num1, num2)
+        elif operation == '4':
+            result = divide(num1, num2)
+        else:
+            return render_template('calculator.html', message='Invalid operation')
+
+        # Update memory with the result
+        session['memory'] = result
+        
+    # Handle memory recall
+    memory_recall = request.args.get('memory_recall')
+    if memory_recall and 'memory' in session:
+        result = session['memory']
+
+    # Pass the memory value to the template
+    memory = session.get('memory', 0)
+
+    return render_template('calculator.html', result=result, memory=memory)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    Handle user login.
+    print("Entering login route")  # Debugging line
 
-    If the request method is POST, attempt to authenticate the user.
-    If successful, redirect to the index page. Otherwise, show an error message.
+    if 'username' in session:
+        print("User is already logged in")  # Debugging line
+        return redirect(url_for('calculator'))  # Redirect to calculator if already logged in
 
-    If the request method is GET, render the login template.
-
-    :return: Rendered template or redirection.
-    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        user = User.query.filter_by(username=username, password=password).first()
+        print(f"Received login request for user: {username}")  # Debugging line
 
-        if user:
+        # Replace the following line with your actual user authentication logic
+        if username == 'admin' and password == 'password':
+            print(f"User {username} logged in successfully.")  # Debugging line
             session['username'] = username
-            return redirect(url_for('index'))
+            return redirect(url_for('calculator'))  # Redirect to calculator on successful login
         else:
+            print("Invalid credentials")  # Debugging line
             return render_template('login.html', message='Invalid credentials')
 
     return render_template('login.html', message='')
 
-# ... (other Flask routes)
+@app.route('/')
+def index():
+    return redirect(url_for('login')) # Redirect to login page
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    with app.app_context():
-        init_db()
     app.run(debug=True)

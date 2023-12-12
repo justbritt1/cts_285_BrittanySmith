@@ -1,0 +1,42 @@
+<!-- calculator.html -->
+{% extends 'index.html' %}
+
+{% block title %}Calculator - My Calculator{% endblock %}
+
+{% block content %}
+    <h2>Calculator</h2>
+
+    <form method="POST" action="{{ url_for('calculator') }}">
+        <label for="num1">Enter first number:</label>
+        <input type="text" name="num1" required><br>
+
+        <label for="operation">Select operation:</label>
+        <select name="operation" id="operation">
+            <option value="1">Add</option>
+            <option value="2">Subtract</option>
+            <option value="3">Multiply</option>
+            <option value="4">Divide</option>
+        </select><br>
+
+        <label for="num2">Enter second number:</label>
+        <input type="text" name="num2" required><br>
+
+        <button type="submit">Calculate</button>
+
+        <!-- Add Memory Recall button -->
+        <a href="{{ url_for('calculator', memory_recall=1) }}">
+            <button type="button">Memory Recall</button>
+        </a>
+
+    </form>
+
+    {% if result is defined %}
+        <p>Result: {{ result }}</p>
+    {% endif %}
+
+
+    <!-- Display memory value -->
+    {% if memory is defined %}
+        <p>Memory: {{ memory }}</p>
+    {% endif %}
+{% endblock %}
