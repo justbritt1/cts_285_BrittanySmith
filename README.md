@@ -3,5 +3,4 @@
 
 Repository for Dataman.
 
-1. word
-2. hello
+login info: username is admin and password is password
